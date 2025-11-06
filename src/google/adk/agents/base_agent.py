@@ -34,6 +34,7 @@ from pydantic import BaseModel
 from pydantic import ConfigDict
 from pydantic import Field
 from pydantic import field_validator
+from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import override
 from typing_extensions import TypeAlias
 
@@ -118,7 +119,9 @@ class BaseAgent(BaseModel):
   One-line description is enough and preferred.
   """
 
-  parent_agent: Optional[BaseAgent] = Field(default=None, init=False)
+  parent_agent: SkipJsonSchema[Optional[BaseAgent]] = Field(
+      default=None, init=False
+  )
   """The parent agent of this agent.
 
   Note that an agent can ONLY be added as sub-agent once.
@@ -127,10 +130,10 @@ class BaseAgent(BaseModel):
   instances with identical config, but with different name and add them to the
   agent tree.
   """
-  sub_agents: list[BaseAgent] = Field(default_factory=list)
+  sub_agents: SkipJsonSchema[list[BaseAgent]] = Field(default_factory=list)
   """The sub-agents of this agent."""
 
-  before_agent_callback: Optional[BeforeAgentCallback] = None
+  before_agent_callback: SkipJsonSchema[Optional[BeforeAgentCallback]] = None
   """Callback or list of callbacks to be invoked before the agent run.
 
   When a list of callbacks is provided, the callbacks will be called in the
@@ -144,7 +147,7 @@ class BaseAgent(BaseModel):
       When the content is present, the agent run will be skipped and the
       provided content will be returned to user.
   """
-  after_agent_callback: Optional[AfterAgentCallback] = None
+  after_agent_callback: SkipJsonSchema[Optional[AfterAgentCallback]] = None
   """Callback or list of callbacks to be invoked after the agent run.
 
   When a list of callbacks is provided, the callbacks will be called in the
