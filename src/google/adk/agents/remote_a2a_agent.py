@@ -58,6 +58,7 @@ except ImportError:
 
 from google.genai import types as genai_types
 import httpx
+from pydantic import PrivateAttr
 
 from ..a2a.converters.event_converter import convert_a2a_message_to_event
 from ..a2a.converters.event_converter import convert_a2a_task_to_event
@@ -121,6 +122,18 @@ class RemoteA2aAgent(BaseAgent):
   - Session state management across requests
   """
 
+  # Private attributes excluded from serialization and schema
+  _agent_card: Optional[AgentCard] = PrivateAttr(default=None)
+  _agent_card_source: Optional[str] = PrivateAttr(default=None)
+  _a2a_client: Optional[A2AClient] = PrivateAttr(default=None)
+  _httpx_client: Optional[httpx.AsyncClient] = PrivateAttr(default=None)
+  _httpx_client_needs_cleanup: bool = PrivateAttr(default=False)
+  _timeout: float = PrivateAttr(default=DEFAULT_TIMEOUT)
+  _is_resolved: bool = PrivateAttr(default=False)
+  _genai_part_converter: GenAIPartToA2APartConverter = PrivateAttr()
+  _a2a_part_converter: A2APartToGenAIPartConverter = PrivateAttr()
+  _a2a_client_factory: Optional[A2AClientFactory] = PrivateAttr(default=None)
+
   def __init__(
       self,
       name: str,
@@ -155,9 +168,9 @@ class RemoteA2aAgent(BaseAgent):
     if agent_card is None:
       raise ValueError("agent_card cannot be None")
 
-    self._agent_card: Optional[AgentCard] = None
-    self._agent_card_source: Optional[str] = None
-    self._a2a_client: Optional[A2AClient] = None
+    self._agent_card = None
+    self._agent_card_source = None
+    self._a2a_client = None
     # This is stored to support backward compatible usage of class.
     # In future, the client is expected to be present in the factory.
     self._httpx_client = httpx_client
@@ -168,7 +181,7 @@ class RemoteA2aAgent(BaseAgent):
     self._is_resolved = False
     self._genai_part_converter = genai_part_converter
     self._a2a_part_converter = a2a_part_converter
-    self._a2a_client_factory: Optional[A2AClientFactory] = a2a_client_factory
+    self._a2a_client_factory = a2a_client_factory
 
     # Validate and store agent card reference
     if isinstance(agent_card, AgentCard):
