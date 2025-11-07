@@ -35,7 +35,6 @@ from pydantic import BaseModel
 from pydantic import Field
 from pydantic import field_validator
 from pydantic import model_validator
-from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import override
 from typing_extensions import TypeAlias
 
@@ -271,7 +270,7 @@ class LlmAgent(BaseAgent):
   ```
   """
 
-  tools: SkipJsonSchema[list[ToolUnion]] = Field(default_factory=list)
+  tools: list[ToolUnion] = Field(default_factory=list, exclude=True)
   """Tools available to this agent."""
 
   generate_content_config: Optional[types.GenerateContentConfig] = None
@@ -326,7 +325,7 @@ class LlmAgent(BaseAgent):
   # Controlled input/output configurations - End
 
   # Advance features - Start
-  planner: SkipJsonSchema[Optional[BasePlanner]] = None
+  planner: Optional[BasePlanner] = Field(default=None, exclude=True)
   """Instructs the agent to make a plan and execute it step by step.
 
   NOTE:
@@ -334,7 +333,7 @@ class LlmAgent(BaseAgent):
     field in `google.adk.planners.built_in_planner`.
   """
 
-  code_executor: SkipJsonSchema[Optional[BaseCodeExecutor]] = None
+  code_executor: Optional[BaseCodeExecutor] = Field(default=None, exclude=True)
   """Allow agent to execute code blocks from model responses using the provided
   CodeExecutor.
 
@@ -346,7 +345,9 @@ class LlmAgent(BaseAgent):
   # Advance features - End
 
   # Callbacks - Start
-  before_model_callback: SkipJsonSchema[Optional[BeforeModelCallback]] = None
+  before_model_callback: Optional[BeforeModelCallback] = Field(
+      default=None, exclude=True
+  )
   """Callback or list of callbacks to be called before calling the LLM.
 
   When a list of callbacks is provided, the callbacks will be called in the
@@ -361,7 +362,9 @@ class LlmAgent(BaseAgent):
     The content to return to the user. When present, the model call will be
     skipped and the provided content will be returned to user.
   """
-  after_model_callback: SkipJsonSchema[Optional[AfterModelCallback]] = None
+  after_model_callback: Optional[AfterModelCallback] = Field(
+      default=None, exclude=True
+  )
   """Callback or list of callbacks to be called after calling the LLM.
 
   When a list of callbacks is provided, the callbacks will be called in the
@@ -375,7 +378,9 @@ class LlmAgent(BaseAgent):
     The content to return to the user. When present, the actual model response
     will be ignored and the provided content will be returned to user.
   """
-  on_model_error_callback: SkipJsonSchema[Optional[OnModelErrorCallback]] = None
+  on_model_error_callback: Optional[OnModelErrorCallback] = Field(
+      default=None, exclude=True
+  )
   """Callback or list of callbacks to be called when a model call encounters an error.
 
   When a list of callbacks is provided, the callbacks will be called in the
@@ -390,7 +395,9 @@ class LlmAgent(BaseAgent):
     The content to return to the user. When present, the error will be
     ignored and the provided content will be returned to user.
   """
-  before_tool_callback: SkipJsonSchema[Optional[BeforeToolCallback]] = None
+  before_tool_callback: Optional[BeforeToolCallback] = Field(
+      default=None, exclude=True
+  )
   """Callback or list of callbacks to be called before calling the tool.
 
   When a list of callbacks is provided, the callbacks will be called in the
@@ -405,7 +412,9 @@ class LlmAgent(BaseAgent):
     The tool response. When present, the returned tool response will be used and
     the framework will skip calling the actual tool.
   """
-  after_tool_callback: SkipJsonSchema[Optional[AfterToolCallback]] = None
+  after_tool_callback: Optional[AfterToolCallback] = Field(
+      default=None, exclude=True
+  )
   """Callback or list of callbacks to be called after calling the tool.
 
   When a list of callbacks is provided, the callbacks will be called in the
@@ -420,7 +429,9 @@ class LlmAgent(BaseAgent):
   Returns:
     When present, the returned dict will be used as tool result.
   """
-  on_tool_error_callback: SkipJsonSchema[Optional[OnToolErrorCallback]] = None
+  on_tool_error_callback: Optional[OnToolErrorCallback] = Field(
+      default=None, exclude=True
+  )
   """Callback or list of callbacks to be called when a tool call encounters an error.
 
   When a list of callbacks is provided, the callbacks will be called in the
