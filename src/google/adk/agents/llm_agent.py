@@ -270,8 +270,12 @@ class LlmAgent(BaseAgent):
   ```
   """
 
-  tools: list[ToolUnion] = Field(default_factory=list, exclude=True)
-  """Tools available to this agent."""
+  tools: Any = Field(default_factory=list, exclude=True)
+  """Tools available to this agent.
+
+  Note: Type is Any to prevent FastAPI schema generation errors.
+  At runtime, this is list[ToolUnion].
+  """
 
   generate_content_config: Optional[types.GenerateContentConfig] = None
   """The additional content generation configurations.
@@ -325,15 +329,18 @@ class LlmAgent(BaseAgent):
   # Controlled input/output configurations - End
 
   # Advance features - Start
-  planner: Optional[BasePlanner] = Field(default=None, exclude=True)
+  planner: Any = Field(default=None, exclude=True)
   """Instructs the agent to make a plan and execute it step by step.
 
   NOTE:
     To use model's built-in thinking features, set the `thinking_config`
     field in `google.adk.planners.built_in_planner`.
+
+  Note: Type is Any to prevent FastAPI schema generation errors.
+  At runtime, this is Optional[BasePlanner].
   """
 
-  code_executor: Optional[BaseCodeExecutor] = Field(default=None, exclude=True)
+  code_executor: Any = Field(default=None, exclude=True)
   """Allow agent to execute code blocks from model responses using the provided
   CodeExecutor.
 
@@ -341,14 +348,18 @@ class LlmAgent(BaseAgent):
 
   NOTE:
     To use model's built-in code executor, use the `BuiltInCodeExecutor`.
+
+  Note: Type is Any to prevent FastAPI schema generation errors.
+  At runtime, this is Optional[BaseCodeExecutor].
   """
   # Advance features - End
 
   # Callbacks - Start
-  before_model_callback: Optional[BeforeModelCallback] = Field(
-      default=None, exclude=True
-  )
+  before_model_callback: Any = Field(default=None, exclude=True)
   """Callback or list of callbacks to be called before calling the LLM.
+
+  Note: Type is Any to prevent FastAPI schema generation errors.
+  At runtime, this is Optional[BeforeModelCallback].
 
   When a list of callbacks is provided, the callbacks will be called in the
   order they are listed until a callback does not return None.
@@ -362,10 +373,11 @@ class LlmAgent(BaseAgent):
     The content to return to the user. When present, the model call will be
     skipped and the provided content will be returned to user.
   """
-  after_model_callback: Optional[AfterModelCallback] = Field(
-      default=None, exclude=True
-  )
+  after_model_callback: Any = Field(default=None, exclude=True)
   """Callback or list of callbacks to be called after calling the LLM.
+
+  Note: Type is Any to prevent FastAPI schema generation errors.
+  At runtime, this is Optional[AfterModelCallback].
 
   When a list of callbacks is provided, the callbacks will be called in the
   order they are listed until a callback does not return None.
@@ -378,10 +390,11 @@ class LlmAgent(BaseAgent):
     The content to return to the user. When present, the actual model response
     will be ignored and the provided content will be returned to user.
   """
-  on_model_error_callback: Optional[OnModelErrorCallback] = Field(
-      default=None, exclude=True
-  )
+  on_model_error_callback: Any = Field(default=None, exclude=True)
   """Callback or list of callbacks to be called when a model call encounters an error.
+
+  Note: Type is Any to prevent FastAPI schema generation errors.
+  At runtime, this is Optional[OnModelErrorCallback].
 
   When a list of callbacks is provided, the callbacks will be called in the
   order they are listed until a callback does not return None.
@@ -395,10 +408,11 @@ class LlmAgent(BaseAgent):
     The content to return to the user. When present, the error will be
     ignored and the provided content will be returned to user.
   """
-  before_tool_callback: Optional[BeforeToolCallback] = Field(
-      default=None, exclude=True
-  )
+  before_tool_callback: Any = Field(default=None, exclude=True)
   """Callback or list of callbacks to be called before calling the tool.
+
+  Note: Type is Any to prevent FastAPI schema generation errors.
+  At runtime, this is Optional[BeforeToolCallback].
 
   When a list of callbacks is provided, the callbacks will be called in the
   order they are listed until a callback does not return None.
@@ -412,10 +426,11 @@ class LlmAgent(BaseAgent):
     The tool response. When present, the returned tool response will be used and
     the framework will skip calling the actual tool.
   """
-  after_tool_callback: Optional[AfterToolCallback] = Field(
-      default=None, exclude=True
-  )
+  after_tool_callback: Any = Field(default=None, exclude=True)
   """Callback or list of callbacks to be called after calling the tool.
+
+  Note: Type is Any to prevent FastAPI schema generation errors.
+  At runtime, this is Optional[AfterToolCallback].
 
   When a list of callbacks is provided, the callbacks will be called in the
   order they are listed until a callback does not return None.
@@ -429,10 +444,11 @@ class LlmAgent(BaseAgent):
   Returns:
     When present, the returned dict will be used as tool result.
   """
-  on_tool_error_callback: Optional[OnToolErrorCallback] = Field(
-      default=None, exclude=True
-  )
+  on_tool_error_callback: Any = Field(default=None, exclude=True)
   """Callback or list of callbacks to be called when a tool call encounters an error.
+
+  Note: Type is Any to prevent FastAPI schema generation errors.
+  At runtime, this is Optional[OnToolErrorCallback].
 
   When a list of callbacks is provided, the callbacks will be called in the
   order they are listed until a callback does not return None.

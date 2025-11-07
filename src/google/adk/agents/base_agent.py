@@ -118,9 +118,7 @@ class BaseAgent(BaseModel):
   One-line description is enough and preferred.
   """
 
-  parent_agent: Optional[BaseAgent] = Field(
-      default=None, init=False, exclude=True
-  )
+  parent_agent: Any = Field(default=None, init=False, exclude=True)
   """The parent agent of this agent.
 
   Note that an agent can ONLY be added as sub-agent once.
@@ -128,14 +126,22 @@ class BaseAgent(BaseModel):
   If you want to add one agent twice as sub-agent, consider to create two agent
   instances with identical config, but with different name and add them to the
   agent tree.
-  """
-  sub_agents: list[BaseAgent] = Field(default_factory=list, exclude=True)
-  """The sub-agents of this agent."""
 
-  before_agent_callback: Optional[BeforeAgentCallback] = Field(
-      default=None, exclude=True
-  )
+  Note: Type is Any to prevent FastAPI schema generation errors.
+  At runtime, this is Optional[BaseAgent].
+  """
+  sub_agents: Any = Field(default_factory=list, exclude=True)
+  """The sub-agents of this agent.
+
+  Note: Type is Any to prevent FastAPI schema generation errors.
+  At runtime, this is list[BaseAgent].
+  """
+
+  before_agent_callback: Any = Field(default=None, exclude=True)
   """Callback or list of callbacks to be invoked before the agent run.
+
+  Note: Type is Any to prevent FastAPI schema generation errors.
+  At runtime, this is Optional[BeforeAgentCallback].
 
   When a list of callbacks is provided, the callbacks will be called in the
   order they are listed until a callback does not return None.
@@ -148,10 +154,11 @@ class BaseAgent(BaseModel):
       When the content is present, the agent run will be skipped and the
       provided content will be returned to user.
   """
-  after_agent_callback: Optional[AfterAgentCallback] = Field(
-      default=None, exclude=True
-  )
+  after_agent_callback: Any = Field(default=None, exclude=True)
   """Callback or list of callbacks to be invoked after the agent run.
+
+  Note: Type is Any to prevent FastAPI schema generation errors.
+  At runtime, this is Optional[AfterAgentCallback].
 
   When a list of callbacks is provided, the callbacks will be called in the
   order they are listed until a callback does not return None.
